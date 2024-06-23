@@ -54,17 +54,25 @@ static const uint8_t __in_flash(".configmenus") default_colors_ansi_dvi[16] =
    0b010101, 0b110000, 0b001100, 0b111100, 0b000011, 0b110011, 0b001111, 0b111111};
 
 static const uint8_t __in_flash(".configmenus") default_colors_ansi_vga[16] =
+  {0b000000, 0b100000, 0b001000, 0b101000, 0b000010, 0b100010, 0b001010, 0b101010, 
+   0b010101, 0b110000, 0b001100, 0b111100, 0b000011, 0b110011, 0b001111, 0b111111};
+/*
+static const uint8_t __in_flash(".configmenus") default_colors_ansi_vga[16] =
   {0b00000000, 0b10000000, 0b00010000, 0b10010000, 0b00000010, 0b10000010, 0b00010010, 0b10010010, 
    0b01001001, 0b11100000, 0b00011100, 0b11111100, 0b00000011, 0b11100011, 0b00011111, 0b11111111};
-
+*/
 static const uint8_t __in_flash(".configmenus") default_colors_petscii_dvi[16] =
   {0b000000, 0b111111, 0b100000, 0b001010, 0b100010, 0b001000, 0b000010, 0b111100, 
    0b111000, 0b100100, 0b110000, 0b010101, 0b101010, 0b001100, 0b000011, 0b101010};
 
 static const uint8_t __in_flash(".configmenus") default_colors_petscii_vga[16] =
+  {0b000000, 0b111111, 0b100000, 0b001010, 0b100010, 0b001000, 0b000010, 0b111100, 
+   0b111000, 0b100100, 0b110000, 0b010101, 0b101010, 0b001100, 0b000011, 0b101010};
+/*
+static const uint8_t __in_flash(".configmenus") default_colors_petscii_vga[16] =
   {0b00000000, 0b11111111, 0b10000000, 0b00010010, 0b10000010, 0b00010000, 0b00000010, 0b11111100, 
    0b10001000, 0b01000100, 0b11100000, 0b01001001, 0b10010010, 0b00011100, 0b00000011, 0b10110110};
-
+*/
 
 static void INFLASHFUN print(const char *format, ...)
 {
