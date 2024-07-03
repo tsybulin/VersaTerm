@@ -100,7 +100,7 @@ bool keyboard_wait_clk_timeout(bool state, uint32_t timeout)
 {
   // time out after 200us
   absolute_time_t endtime = make_timeout_time_us(timeout);
-  while( get_absolute_time() < endtime )
+  while( to_us_since_boot(get_absolute_time()) < to_us_since_boot(endtime) )
     if( gpio_get(PIN_PS2_CLOCK)==state )
       return true;
   
@@ -213,7 +213,7 @@ uint8_t keyboard_send_byte_wait_response(uint8_t b)
       if( keyboard_send_byte(b) ) 
         {
           absolute_time_t timeout = make_timeout_time_ms(100);
-          while( waitResponse<0 && get_absolute_time()<timeout );
+          while( waitResponse<0 && to_us_since_boot(get_absolute_time())<to_us_since_boot(timeout) );
           if( waitResponse>=0 && waitResponse!=0xFE ) retries = 0;
         }
 
@@ -303,11 +303,18 @@ static void process_byte(uint8_t b)
 static void keyboard_bit_received(bool data)
 {
   static uint8_t kbd_data = 0, kbd_parity = 0;
-  static absolute_time_t kbd_prev_pulse = 0;
+#ifdef NDEBUG
+  static absolute_time_t kbd_prev_pulse = 0 ;
+#else
+  static absolute_time_t kbd_prev_pulse ;
+#endif
+
+
   absolute_time_t t = get_absolute_time();
 
+
   // clear error state if CLK line was idle for longer than 1ms
-  if( kbd_state == KBD_ERROR && (t-kbd_prev_pulse)>1000 )
+  if( kbd_state == KBD_ERROR && (to_us_since_boot(t) - to_us_since_boot(kbd_prev_pulse))>1000 )
     kbd_state = KBD_START;
   
   if( kbd_state == KBD_START )

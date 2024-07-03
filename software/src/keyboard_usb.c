@@ -50,7 +50,7 @@ static void print(const char *format, ...)
 //--------------------------------------------------------------------+
 
 static uint8_t keyboard_repeat_key = 0;
-static absolute_time_t keyboard_repeat_timeout = 0;
+static absolute_time_t keyboard_repeat_timeout ;
 static uint8_t s_leds, keyboard_dev_addr = 0xFF, keyboard_instance = 0xFF;
 
 
@@ -126,7 +126,7 @@ static void process_kbd_report(uint8_t dev_addr, uint8_t instance, hid_keyboard_
 
 void keyboard_usb_task()
 {
-  if( keyboard_repeat_key!=HID_KEY_NONE && get_absolute_time() >= keyboard_repeat_timeout )
+  if( keyboard_repeat_key!=HID_KEY_NONE && to_us_since_boot(get_absolute_time()) >= to_us_since_boot(keyboard_repeat_timeout ))
     {
       keyboard_key_change(keyboard_repeat_key, true);
       keyboard_repeat_timeout = make_timeout_time_ms(1000000/config_get_keyboard_repeat_rate_mHz());

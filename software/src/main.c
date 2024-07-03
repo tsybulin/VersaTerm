@@ -35,7 +35,7 @@
 
 // see comment at start of main()
 #define BOOTSEL_TIMEOUT_MS 1500
-static absolute_time_t bootsel_timeout = 0;
+static absolute_time_t bootsel_timeout ;
 static const uint32_t bootsel_magic[] = {0xf01681de, 0xbd729b29, 0xd359be7a};
 static uint32_t __uninitialized_ram(bootsel_magic_ram)[count_of(bootsel_magic)];
 static uint16_t ignore_key = HID_KEY_NONE;
@@ -63,9 +63,10 @@ void run_tasks(bool processInput)
   serial_task(processInput);
 
   // handle bootsel mechanism timeout
-  if( bootsel_timeout>0 && get_absolute_time()>=bootsel_timeout )
+  
+  if(to_us_since_boot(bootsel_timeout) > 0 && to_us_since_boot(get_absolute_time()) >= to_us_since_boot(bootsel_timeout) )
     {
-      bootsel_timeout = 0;
+      update_us_since_boot(&bootsel_timeout, 0) ;
       for(uint i=0; i<count_of(bootsel_magic); i++) 
         bootsel_magic_ram[i] = 0;
     }
@@ -114,7 +115,7 @@ void run_tasks(bool processInput)
 void wait(uint32_t milliseconds)
 {
   absolute_time_t timeout = make_timeout_time_ms(milliseconds);
-  while( get_absolute_time()<timeout ) run_tasks(false);
+  while( to_us_since_boot(get_absolute_time()) < to_us_since_boot(timeout) ) run_tasks(false);
 }
 
 
@@ -124,6 +125,9 @@ int main()
   // library but that library uses a busy wait until the maximum time for the double-tap
   // has expired. Implementing it ourselves here instead allows to use that wait time
   // for initialization.
+
+    update_us_since_boot(&bootsel_timeout, 0) ;
+
   uint i;
   for(i=0; i<count_of(bootsel_magic) && bootsel_magic_ram[i]==bootsel_magic[i]; i++);
 

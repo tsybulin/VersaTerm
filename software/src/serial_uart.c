@@ -39,7 +39,7 @@ static queue_t uart_tx_queue;
 static queue_t uart_rx_queue;
 
 // timeout when to turn off blink LED
-static absolute_time_t offtime = 0;
+static absolute_time_t offtime ;
 
 
 static void blink_led(uint16_t ms)
@@ -225,8 +225,11 @@ void serial_uart_task(bool processInput)
     }
 
   // handle LED flashing
-  if( offtime>0 && get_absolute_time() >= offtime )
-    { offtime = 0; gpio_put(PIN_LED, false); }
+  if( to_us_since_boot(offtime)>0 && to_us_since_boot(get_absolute_time()) >= to_us_since_boot(offtime) )
+    { 
+      update_us_since_boot(&offtime, 0) ;
+      gpio_put(PIN_LED, false); 
+    }
 
   // handle serial input
   if( processInput && serial_uart_receive_char(&b) )
@@ -251,9 +254,8 @@ void serial_uart_task(bool processInput)
 }
 
 
-void serial_uart_init()
-{
-  offtime = 0;
+void serial_uart_init() {
+  update_us_since_boot(&offtime, 0) ;
   gpio_init(PIN_LED);
   gpio_set_dir(PIN_LED, true); // output
   blink_led(1000);
