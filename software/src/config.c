@@ -1981,7 +1981,7 @@ static int INFLASHFUN baud_fn(const struct MenuItemStruct *item, int callType, i
     }
   else if( callType==IFT_DEFAULT )
     {
-      settings.Serial.baud = 9600;
+      settings.Serial.baud = 115200;
     }
 
   return res;
@@ -2255,18 +2255,17 @@ void INFLASHFUN handleMenu(const char *title, const struct MenuItemStruct *items
 }
 
 
-void INFLASHFUN config_show_splash()
-{
-  static const char __in_flash(".configmenus") splash[9][80] =
-    {"\016lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk\n",
-     "x\017                     VersaTerm 1.0                     \016x", 
-     "x\017                 (C) 2022 David Hansel                 \016x",
-     "x\017          https://github.com/dhansel/VersaTerm         \016x",
-     "tqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqu",
-     "x\017  DVI output  via https://github.com/Wren6991/PicoDVI  \016x", 
-     "x\017  VGA output  via https://github.com/Panda381/PicoVGA  \016x", 
-     "x\017  USB support via https://github.com/hathach/tinyusb   \016x", 
-     "mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj\017"};
+void INFLASHFUN config_show_splash() {
+    static const char __in_flash(".configmenus") splash[8][80] = {
+        "oo____oo________________________________oooooooo___________________________",
+        "oo____oo__ooooo__oo_ooo___oooo___ooooo_____oo_____ooooo__oo_ooo__oo_oo_oo__", 
+        "oo____oo_oo____o_ooo___o_oo___o_oo___oo____oo____oo____o_ooo___o_ooo_oo__o_",
+        "_oo__oo__ooooooo_oo________oo___oo___oo____oo____ooooooo_oo______oo__oo__o_",
+        "__oooo___oo______oo______o___oo_oo___oo____oo____oo______oo______oo__oo__o_",
+        "___oo_____ooooo__oo_______oooo___oooo_o____oo_____ooooo__oo______oo______o_",
+        "___________________________________________________________________________",
+        "\n"
+    } ;
 
   if( settings.Screen.splash!=0 )
     {
@@ -2274,12 +2273,25 @@ void INFLASHFUN config_show_splash()
       framebuf_apply_settings();
       terminal_apply_settings();
 
-      int top  = framebuf_get_nrows()/2-5;
-      int left = framebuf_get_ncols(-1)/2-29;
-      print("\033[?25l\033)0\033[%i;1H", top);
-      printLines(top, left, 9, splash);
-      while( keyboard_num_keypress()==0 && !serial_readable() )
+      int top  = 2;
+      int left = 2;
+      printLines(top, left, 8, splash);
+
+    // clear keyboard buffer
+    while (keyboard_num_keypress() > 0) {
+        keyboard_read_keypress() ;
+    }
+
+    // clear serual buffer
+    while (serial_readable()) {
+        serial_task(true) ;
+    }
+
+    //wait for keypress or serial input
+    while( keyboard_num_keypress()==0 && !serial_readable() 
+    ) {
         run_tasks(false);
+    }
       
       menuActive = false;
       framebuf_apply_settings();
