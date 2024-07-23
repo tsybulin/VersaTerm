@@ -1298,6 +1298,11 @@ static void INFLASHFUN terminal_process_key_vt(uint16_t key)
         break;
       }
 
+    case KEY_F5: {
+      send_string("\033Ow") ;
+      break;
+    }
+
     case KEY_ENTER:
       {
         switch( config_get_keyboard_enter() )
