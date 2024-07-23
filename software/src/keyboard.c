@@ -356,6 +356,9 @@ uint8_t INFLASHFUN keyboard_map_key_ascii(uint16_t k, bool *isaltcode)
     {
       ascii = keyMapSpecial[key-HID_KEY_PAUSE];
     }
+  else if (key == HID_KEY_RETURN) {
+    ascii = HID_KEY_RETURN;
+  }
   else if( (key >= HID_KEY_KEYPAD_DIVIDE) && (key <= HID_KEY_KEYPAD_DECIMAL) )
     {
       if( (keyboard_led_status & KEYBOARD_LED_NUMLOCK)==0 )

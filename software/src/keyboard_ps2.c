@@ -274,7 +274,7 @@ static void process_byte(uint8_t b)
         case 0x1F: key = HID_KEY_GUI_LEFT;      break;
         case 0x27: key = HID_KEY_GUI_RIGHT;     break;
         case 0x4A: key = HID_KEY_KEYPAD_DIVIDE; break;
-        case 0x5A: key = HID_KEY_ENTER;         break;
+        case 0x5A: key = HID_KEY_RETURN;        break;
         case 0x69: key = HID_KEY_END;           break;
         case 0x6B: key = HID_KEY_ARROW_LEFT;    break;
         case 0x6C: key = HID_KEY_HOME;          break;

@@ -1303,6 +1303,11 @@ static void INFLASHFUN terminal_process_key_vt(uint16_t key)
       break;
     }
 
+    case HID_KEY_RETURN: {
+      send_string("\033OM") ;
+      break;
+    }
+
     case KEY_ENTER:
       {
         switch( config_get_keyboard_enter() )
